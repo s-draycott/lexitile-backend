@@ -1,17 +1,15 @@
-name := """llelexitile-backend"""
-organization := "com.draycott"
+enablePlugins(PlayScala)
 
-version := "1.0-SNAPSHOT"
+ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / version := "0.1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
-
-scalaVersion := "2.13.16"
-
-libraryDependencies += guice
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.2" % Test
-
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "com.draycott.controllers._"
-
-// Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "com.draycott.binders._"
+lazy val root = (project in file("."))
+  .settings(
+    name := "lexitile",
+    libraryDependencies ++= Seq(
+      guice,
+      "com.typesafe.play" %% "play-json" % "2.10.7",
+      "com.typesafe.play" %% "play-filters-helpers" % "2.9.8",
+      "com.typesafe.play" %% "filters-helpers" % "2.8.22"
+    )
+  )
