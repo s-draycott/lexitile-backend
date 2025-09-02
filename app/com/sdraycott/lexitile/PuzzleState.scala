@@ -15,8 +15,11 @@ object PuzzleState {
   implicit val format: OFormat[PuzzleState] = Json.format[PuzzleState]
 }
 
-case class MoveRequest(state: PuzzleState, direction: String)
+case class MoveRequest(row: Int, col: Int)
 
 object MoveRequest {
+  implicit val reads: Reads[MoveRequest] = Json.reads[MoveRequest]
+  implicit val writes: OWrites[MoveRequest] = Json.writes[MoveRequest]
   implicit val format: OFormat[MoveRequest] = Json.format[MoveRequest]
 }
+

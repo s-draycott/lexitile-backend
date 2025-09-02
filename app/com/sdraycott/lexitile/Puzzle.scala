@@ -25,8 +25,8 @@ class Puzzle {
     val threeLetterWords = dictionary.filter(_.length == 3).toSeq
 
     //GETS RANDOM WORDS AND TURNS INTO ROWS OF CHAR ARRAYS AND APPENDS A SPACE TO 3 LETTER WORD
-    val rowsFourLetter = randomFromDate.shuffle(fourLetterWords).take(3).map(_.toCharArray).toArray
-    val lastRow = randomFromDate.shuffle(threeLetterWords).head.toCharArray :+ ' '
+    val rowsFourLetter = randomFromDate.shuffle(fourLetterWords).take(3).map(_.toUpperCase.toCharArray).toArray
+    val lastRow = randomFromDate.shuffle(threeLetterWords).head.toUpperCase.toCharArray :+ ' '
     val puzzle = rowsFourLetter :+ lastRow
     puzzle
   }
@@ -47,25 +47,19 @@ class Puzzle {
 
 
   //LOGIC FOR SLIDING EMPTY SPACE AROUND
-  def slide(direction: String): Boolean = {
-    val (targetRow, targetCol) = direction.toLowerCase match {
-      case "up"    => (emptyRow - 1, emptyCol)
-      case "down"  => (emptyRow + 1, emptyCol)
-      case "right" => (emptyRow, emptyCol + 1)
-      case "left"  => (emptyRow, emptyCol - 1)
-      case _       => (emptyRow, emptyCol)
-    }
+  def slideTo(targetRow: Int, targetCol: Int): Boolean = {
+    val rowDiff = targetRow - emptyRow
+    val colDiff = targetCol - emptyCol
 
-    if (targetRow >= 0 && targetRow < 4 && targetCol >= 0 && targetCol < 4) {
-      val targetPosition = puzzle(targetRow)(targetCol)
+    // Only allow moving tiles that are directly adjacent
+    if ((Math.abs(rowDiff) == 1 && colDiff == 0) || (Math.abs(colDiff) == 1 && rowDiff == 0)) {
+      val temp = puzzle(targetRow)(targetCol)
       puzzle(targetRow)(targetCol) = puzzle(emptyRow)(emptyCol)
-      puzzle(emptyRow)(emptyCol) = targetPosition
-
+      puzzle(emptyRow)(emptyCol) = temp
       emptyRow = targetRow
       emptyCol = targetCol
       printPuzzle
       true
     } else false
-
   }
 }

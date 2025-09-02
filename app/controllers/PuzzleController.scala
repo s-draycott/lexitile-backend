@@ -26,13 +26,11 @@ class PuzzleController @Inject()(val controllerComponents: ControllerComponents)
     request.body.validate[MoveRequest].fold(
       errors => BadRequest(JsError.toJson(errors)),
       moveReq => {
-        currentPuzzle.emptyRow = moveReq.state.emptyRow
-        currentPuzzle.emptyCol = moveReq.state.emptyCol
-        currentPuzzle.puzzle = moveReq.state.board.map(_.toArray).toArray
-
-        val moved = currentPuzzle.slide(moveReq.direction)
+        val moved = currentPuzzle.slideTo(moveReq.row, moveReq.col)
         if (moved)
-          Ok(Json.toJson(puzzleToState(currentPuzzle)))
+          Ok(Json.obj(
+            "board" -> currentPuzzle.puzzle.map(_.map(_.toString))
+          ))
         else
           BadRequest(Json.obj("error" -> "Invalid move"))
       }
