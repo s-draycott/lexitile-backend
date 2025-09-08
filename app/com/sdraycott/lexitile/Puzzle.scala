@@ -5,7 +5,9 @@ import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class Puzzle {
-  val dictionary = WordDictionary.words
+  val dictionary = WordDictionary.words //loads the dictionary
+
+  //sets empty square
   var emptyRow: Int = 3
   var emptyCol: Int = 3
   var puzzle: Array[Array[Char]] = generatePuzzle
@@ -20,6 +22,7 @@ class Puzzle {
 
   //GENERATE THE PUZZLE
   def generatePuzzle: Array[Array[Char]] = {
+    //sets a random number from the date so as long as the dates the same the random number will be the same
     val randomFromDate = new Random(dayCode)
     val fourLetterWords = dictionary.filter(_.length == 4).toSeq
     val threeLetterWords = dictionary.filter(_.length == 3).toSeq
@@ -31,10 +34,7 @@ class Puzzle {
     puzzle
   }
 
-
-
   //LOGIC FOR SOLVING PUZZLE
-
   def isSolved = {
     puzzle.map(_.mkString("").trim).sorted.mkString(" ").trim.toLowerCase.split(" ").toList.
       forall(word => if (dictionary.contains(word)) true else false)
@@ -44,7 +44,6 @@ class Puzzle {
   def printPuzzle: Unit = {
     puzzle.foreach { row => println(row.mkString(" ")) }
   }
-
 
   //LOGIC FOR SLIDING EMPTY SPACE AROUND
   def slideTo(targetRow: Int, targetCol: Int): Boolean = {

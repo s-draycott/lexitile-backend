@@ -2,7 +2,7 @@ package com.sdraycott.lexitile
 
 import play.api.libs.json._
 
-case class PuzzleState(board: Vector[Vector[Char]], emptyRow: Int, emptyCol: Int)
+case class PuzzleState(board: Vector[Vector[Char]], emptyRow: Int, emptyCol: Int, solved: Boolean)
 
 object PuzzleState {
   implicit val charFormat: Format[Char] = Format(
@@ -14,6 +14,8 @@ object PuzzleState {
 
   implicit val format: OFormat[PuzzleState] = Json.format[PuzzleState]
 }
+
+
 
 case class MoveRequest(row: Int, col: Int)
 

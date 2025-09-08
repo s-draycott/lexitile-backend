@@ -12,13 +12,13 @@ class PuzzleController @Inject()(val controllerComponents: ControllerComponents)
 
   implicit val puzzleStateFormat = PuzzleState.format
 
-  private def puzzleToState(puzzle: Puzzle): PuzzleState =
-    PuzzleState(puzzle.puzzle.map(_.toVector).toVector, puzzle.emptyRow, puzzle.emptyCol)
+  private def puzzleToState(puzzle: Puzzle, solved: Boolean): PuzzleState =
+    PuzzleState(puzzle.puzzle.map(_.toVector).toVector, puzzle.emptyRow, puzzle.emptyCol, puzzle.isSolved)
 
   /** GET /puzzle/new */
   def newPuzzle() = Action {
     currentPuzzle = new Puzzle()
-    Ok(Json.toJson(puzzleToState(currentPuzzle)))
+    Ok(Json.toJson(puzzleToState(currentPuzzle, currentPuzzle.isSolved)))
   }
 
   /** POST /puzzle/move */
@@ -27,12 +27,15 @@ class PuzzleController @Inject()(val controllerComponents: ControllerComponents)
       errors => BadRequest(JsError.toJson(errors)),
       moveReq => {
         val moved = currentPuzzle.slideTo(moveReq.row, moveReq.col)
-        if (moved)
+        if (moved) {
+          val isSolved = currentPuzzle.isSolved // implement this in your puzzle class
           Ok(Json.obj(
-            "board" -> currentPuzzle.puzzle.map(_.map(_.toString))
+            "board" -> currentPuzzle.puzzle.map(_.map(_.toString)),
+            "solved" -> isSolved
           ))
-        else
+        } else {
           BadRequest(Json.obj("error" -> "Invalid move"))
+        }
       }
     )
   }
