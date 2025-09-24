@@ -18,6 +18,7 @@ class PuzzleController @Inject()(val controllerComponents: ControllerComponents)
   /** GET /puzzle/new */
   def newPuzzle() = Action {
     currentPuzzle = new Puzzle()
+    currentPuzzle.shufflePuzzle(200)
     Ok(Json.toJson(puzzleToState(currentPuzzle, currentPuzzle.isSolved)))
   }
 

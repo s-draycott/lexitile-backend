@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class Puzzle {
-  val dictionary = WordDictionary.words //loads the dictionary
+  val dictionary = WordDictionary.words //loads the refined word dictionary
 
   //sets empty square
   var emptyRow: Int = 3
@@ -60,5 +60,23 @@ class Puzzle {
       printPuzzle
       true
     } else false
+  }
+
+  def shufflePuzzle(moves: Int = 100): Unit = {
+    val random = new Random()
+    var count = 0
+
+    while (count < moves) {
+      val directions = Seq((-1,0), (1, 0), (0, -1), (0, 1))
+      val (dr, dc) = directions(random.nextInt(directions.length))
+
+      val newRow = emptyRow + dr
+      val newCol = emptyCol + dc
+
+      if(newRow >= 0 && newRow < puzzle.length && newCol >= 0 && newCol < puzzle(0).length) {
+        slideTo(newRow, newCol)
+        count +=1
+      }
+    }
   }
 }
