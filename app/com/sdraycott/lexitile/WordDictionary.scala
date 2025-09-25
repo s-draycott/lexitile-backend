@@ -13,7 +13,7 @@ object WordDictionary {
     wordSet
   }
 
-  private lazy val fullWords: Set[String] = {
+  lazy val fullWords: Set[String] = {
     val source = Source.fromResource("words.txt")
     val fullWordSet = source.getLines().map(_.trim.toLowerCase).toSet
     source.close()

@@ -6,30 +6,39 @@ import scala.util.Random
 
 class Puzzle {
   val dictionary = WordDictionary.words //loads the refined word dictionary
+  val fullDictionary = WordDictionary.fullWords
 
   //sets empty square
   var emptyRow: Int = 3
   var emptyCol: Int = 3
-  var puzzle: Array[Array[Char]] = generatePuzzle
+  var puzzle: Array[Array[Char]] = generatePuzzle //generated puzzle variable from method below
 
   //Date coder to ensure same words each day
   private def dayCode: Int = {
-    val today = LocalDate.now()
+    val today = LocalDate.now() //date in format yyyy-mm-dd
     val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
     val dateStr = today.format(formatter)
-    dateStr.toInt
+    dateStr.toInt //creates unique int from String for random choice of words for the day for that puzzle
   }
 
   //GENERATE THE PUZZLE
   def generatePuzzle: Array[Array[Char]] = {
-    //sets a random number from the date so as long as the dates the same the random number will be the same
+    //date is passed as seed to form a new Random. Every time you create a Random with the same seed, it will generate the same sequence of “random” numbers.
+    //Important to note here that you're not generating a list of numbers but creating a random number generator that can effectively produce an infinite sequence of random nums
     val randomFromDate = new Random(dayCode)
+
+    //filters refined word dictionary of everything (_.) to a length of 3 or 4 and then conversts to Seq
     val fourLetterWords = dictionary.filter(_.length == 4).toSeq
     val threeLetterWords = dictionary.filter(_.length == 3).toSeq
 
     //GETS RANDOM WORDS AND TURNS INTO ROWS OF CHAR ARRAYS AND APPENDS A SPACE TO 3 LETTER WORD
-    val rowsFourLetter = randomFromDate.shuffle(fourLetterWords).take(3).map(_.toUpperCase.toCharArray).toArray
-    val lastRow = randomFromDate.shuffle(threeLetterWords).head.toUpperCase.toCharArray :+ ' '
+    val rowsFourLetter =
+      randomFromDate
+        .shuffle(fourLetterWords) //returns a NEW Seq[string] of shuffled four letter words whose shuffle is determined by the random
+        .take(3) //Takes first three elements
+        .map(_.toUpperCase.toCharArray) //maps for each string (_.) in the Seq[] to upper case and then to a char[]
+        .toArray //takes input of Seq[Array[Chars]] and returns Array[Array[Chars]] to match the puzzle structure I defined
+    val lastRow = randomFromDate.shuffle(threeLetterWords).head.toUpperCase.toCharArray :+ ' ' //same as before but append a space on the end for blank square
     val puzzle = rowsFourLetter :+ lastRow
     puzzle
   }
@@ -37,7 +46,7 @@ class Puzzle {
   //LOGIC FOR SOLVING PUZZLE
   def isSolved = {
     puzzle.map(_.mkString("").trim).sorted.mkString(" ").trim.toLowerCase.split(" ").toList.
-      forall(word => if (dictionary.contains(word)) true else false)
+      forall(word => if (fullDictionary.contains(word)) true else false)
   }
 
   //LOGIC FOR PRINTING GRID
